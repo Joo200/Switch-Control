@@ -1,0 +1,380 @@
+openapi: 3.0.2
+info:
+  version: '1.0.0'
+  title: Switch Control
+
+  license:
+    name: MIT
+    url: 'https://github.com/Joo200/Switch-Control/blob/master/LICENSE'
+
+  description: |
+    This is an API to configure and manipulate switch control.
+    # Introduction
+    The specification should be used to configure switches and buttons in the webserver from an ESP32.
+
+servers:
+  - url: 'http://192.168.178.57/api'
+  - url: 'http://192.168.178.58/api'
+
+paths:
+  '/update':
+    post:
+      deprecated: true
+      summary: "Update the software via an OTA update, only works with 8MB flash."
+      description: |
+        This will trigger a software update to a new software release.
+        The webserver has to be correctly configured and contain the correct certificate authority.
+        The device will reboot after the ota update succeeds.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  description: "The download url for a new binary blob"
+                  type: string
+                  example: "https://172.168.1.23:4443/switch-control.bin"
+      responses:
+        '200':
+          description: "Triggering Update was successful"
+        '500':
+          # TODO: Improve error content
+          description: "The Update failed"
+  '/config':
+    get:
+      summary: "Get the configuration for channels"
+      description: |
+        Get the current configuration for the channels.
+        It is possible to specify a channel, else the whole configuration will be transmitted.
+      parameters:
+        - name: channel
+          in: query
+          description: "A specific channel"
+          required: false
+          schema:
+            $ref: "#/components/schemas/Channel"
+      responses:
+        '200':
+          description: "The requested Configuration"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigGpio'
+        '404':
+          description: "The specified channel doesn't exist"
+    post:
+      summary: "Update the configuration for one channel"
+      description: |
+        Update the configuration for one channel. It's not possible to update multiple channels at the same time.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfigGpio"
+      responses:
+        '201':
+          description: "Config changed successfully"
+        '401':
+          $ref: '#/components/schemas/ApiError'
+  '/status':
+    get:
+      summary: "Current information about application"
+      description: |
+        Get a summary of the status of the application
+      responses:
+        '200':
+          description: "Status"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/DeviceInfo'
+  '/channel':
+    get:
+      summary: "Get the current status of all channels"
+      description: |
+        Get the current status of all channels in an array.
+      responses:
+        '200':
+          description: "The current status"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChannelState'
+    post:
+      summary: "Trigger a change for a single channel"
+      description: >
+        "Apply some action to a channel. The channel has to be configured as switch."
+         * Provide "action" to set the direction of the switch.
+         * Provide "time" with action = Custom to set a time in us.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwitchAction'
+      responses:
+        '201':
+          description: "Update was successful"
+        '401':
+          $ref: '#/components/schemas/ApiError'
+  '/wifi':
+    get:
+      summary: "Get the current wifi configuration"
+      responses:
+        '200':
+          $ref: '#/components/schemas/WifiConfiguration'
+    post:
+      summary: "Update the current wifi configuration"
+      description: |
+        Update the wifi configuration.
+        The server will connect to the new provided ssid and passphrase.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WifiConfiguration'
+      responses:
+        '201':
+          description: "Update was successful"
+        '401':
+          $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    Channel:
+      description: "A userfriendly named Channel"
+      type: "string"
+      enum: ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8"]
+    SwitchDirection:
+      description: "A direction for a switch"
+      type: "string"
+      enum: ["Unknown", "Left", "Right"]
+    ServoTime:
+      description: "Time of a servo operation in us"
+      type: integer
+      minimum: 800
+      maximum: 2200
+      default: 1500
+    ChannelType:
+      description: >
+        "The selected type of this channel"
+         * 'Disabled' - Channel is not used
+         * 'Servo' - Channel is used as servo output. Available on A1 - A8
+         * 'SmartButton' - Channel is used as button in/output. Available on A1 - A8 and B1 - B8
+      type: "string"
+      enum: ["Disabled", "Servo", "SmartButton"]
+
+    ApiError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          description: "A text with a error description"
+          type: string
+
+    DeviceInfo:
+      type: object
+      properties:
+        wifi:
+          type: object
+          description: "Holds information about the current wifi status"
+          properties:
+            mode:
+              type: string
+              enum: ["Off", "STA", "AP", "Unknown"]
+            status:
+              description: "STA state"
+              type: string
+              enum: ["Unknown", "Starting", "Connected", "IpReceived", "Disconnected"]
+        chip:
+          type: object
+          description: "Information about the used hardware chip"
+          properties:
+            model:
+              type: string
+              description: "The used chip model"
+            cores:
+              type: number
+              description: "Number of available cores"
+            revision:
+              type: number
+              description: "Revision of the chip, format MXX with M = wafer major version and XX = wafer minor version"
+            features:
+              type: number
+              description: "Set of available features"
+        app:
+          type: object
+          description: "Information about the running application"
+          properties:
+            name:
+              type: string
+              description: "Name of application"
+            version:
+              type: string
+              description: "Version of application"
+            idf-version:
+              type: string
+              description: "Version of used espressif framework"
+            sha256:
+              type: string
+              description: "Checksum of app"
+            date:
+              type: string
+              description: "Compilation date"
+            time:
+              type: string
+              description: "Compilation time"
+
+    ChannelState:
+      type: object
+      required:
+        - channel
+        - type
+      properties:
+        channel:
+          $ref: '#/components/schemas/Channel'
+        type:
+          $ref: '#/components/schemas/ChannelType'
+        switch:
+          description: >
+            "The state of the switch if configured as switch."
+            "The position can be Unknown when no valid position is selected."
+          type: object
+          required:
+            - time
+            - position
+            - overdrawPending
+          properties:
+            time:
+              $ref: '#/components/schemas/ServoTime'
+            position:
+              $ref: '#/components/schemas/SwitchDirection'
+            nextPosition:
+              $ref: '#/components/schemas/SwitchDirection'
+            overdrawing:
+              description: "Whether an overdraw position is in progress"
+              type: boolean
+    ConfigGpio:
+      type: object
+      required:
+        - channel
+        - type
+      properties:
+        channel:
+          $ref: '#/components/schemas/Channel'
+        type:
+          $ref: '#/components/schemas/ChannelType'
+        button:
+          $ref: '#/components/schemas/ConfigButton'
+        servo:
+          $ref: '#/components/schemas/ConfigServo'
+    ConfigButton:
+      type: object
+      properties:
+        invertedInput:
+          description: "Whether the input is logical inverted"
+          type: boolean
+          default: true
+        invertedOutput:
+          description: "Whether the output is logical inverted"
+          type: boolean
+          default: true
+        actions:
+          description: "Array of actions to perform on activation"
+          type: array
+          items:
+            $ref: '#/components/schemas/SwitchAction'
+    ConfigServo:
+      type: object
+      properties:
+        posLeft:
+          $ref: '#/components/schemas/ServoTime'
+        posRight:
+          $ref: '#/components/schemas/ServoTime'
+        posLeftOverdraw:
+          $ref: '#/components/schemas/ServoTime'
+        posRightOverdraw:
+          $ref: '#/components/schemas/ServoTime'
+        overdrawTime:
+          type: number
+          description: "Time in seconds to overdraw, used as double"
+          default: 0.2
+    SwitchAction:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/Channel'
+        direction:
+          type: "string"
+          description: "The direction which should be used"
+          enum: ["Left", "Right", "Unknown", "Custom"]
+        time:
+          $ref: '#/components/schemas/ServoTime'
+    WifiConfiguration:
+      type: object
+      required:
+        - mode
+        - hostname
+        - sta
+        - ap
+      properties:
+        mode:
+          type: string
+          description: "Operation Mode for WiFi"
+          enum: ["AP", "STA", "Off"]
+        hostname:
+          type: string
+          description: "Hostname for sta mode"
+        sta:
+          type: object
+          required:
+            - ssid
+            - passphrase
+            - method
+          properties:
+            ssid:
+              type: string
+              description: "SSID to connect to"
+            passphrase:
+              type: string
+              description: "Passphrase to connect to"
+            method:
+              type: string
+              enum: ["static", "dhcp"]
+            staticIp:
+              type: object
+              required:
+                - address
+                - gateway
+                - prefix
+              properties:
+                address:
+                  type: string
+                  default: "192.168.178.30"
+                  pattern: ^([0-9]{1,3}\.){3}[0-9]{1,3}$
+                gateway:
+                  type: string
+                  default: "192.168.178.1"
+                  pattern: ^([0-9]{1,3}\.){3}[0-9]{1,3}$
+                netmask:
+                  type: string
+                  default: "255.255.255.0"
+                  pattern: ^([0-9]{1,3}\.){3}[0-9]{1,3}$
+        ap:
+          type: object
+          properties:
+            ssid:
+              type: string
+              description:  "SSID for SoftAP"
+              default: "switch-control"
+            passphrase:
+              type: string
+              description: "Phassphrase for SoftAP"
+              default: "emergency"

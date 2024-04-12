@@ -1,0 +1,88 @@
+{
+  "title": "Switch Control",
+  "devInfo": {
+    "title": "Device Info",
+    "app": {
+      "title": "App Information",
+      "name": "name",
+      "version": "version",
+      "compile_time": "compile time",
+      "framework": "framework"
+    },
+    "chip": {
+      "title": "Chip Information",
+      "model": "Model",
+      "cores": "Cores",
+      "revision": "Revision"
+    },
+    "wifi": {
+      "title": "WiFi Information",
+      "mode": "Mode",
+      "status": "Status"
+    }
+  },
+  "wifi":{
+    "title": "WiFi Settings",
+    "mode": {
+      "label":"Mode:",
+      "off": "Disabled",
+      "ap": "Access Point",
+      "sta": "WiFi Client"
+    },
+    "hostname": "Hostname:",
+    "sta": {
+      "title": "Client settings",
+      "ssid": "SSID:",
+      "passphrase": "Passphrase:",
+      "method": "Method:",
+      "method-dhcp": "DHCP",
+      "method-static": "Static",
+      "address": "Address:",
+      "gateway": "Gateway:",
+      "netmask": "Netmask:"
+    },
+    "ap": {
+      "title": "Access Point",
+      "ssid": "SSID:",
+      "passphrase": "Passphrase:"
+    },
+    "update": "Update Config"
+  },
+  "channel": {
+    "title": "Configure {channel}",
+    "type": {
+      "label":"Type:",
+      "disabled": "Disabled",
+      "servo": "Servo",
+      "smartbutton": "Smart-Button"
+    },
+    "position": {
+      "label-left": "Position Left",
+      "label-right": "Position Right",
+      "normal": "Normal:",
+      "overdraw": "Overdraw:",
+      "step-up": "+",
+      "step-down": "-",
+      "overdraw-time": "Overdraw Time:"
+    },
+    "actions": {
+      "title": "Actions",
+      "add": "Add Action",
+      "delete": "Delete",
+      "channel": "Channel:",
+      "direction": {
+        "label": "Direction:",
+        "left": "Left",
+        "right": "Right",
+        "custom": "Custom",
+        "time": "Time:"
+      }
+    },
+    "update": "Update Config",
+    "test": {
+      "left": "Left",
+      "right": "Right"
+    }
+  },
+  "loading": "Loading App, please wait..."
+}

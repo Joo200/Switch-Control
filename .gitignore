@@ -1,0 +1,8 @@
+# IDE files
+.idea
+
+# CMake
+build
+cmake-build**
+
+sdkconfig.old
