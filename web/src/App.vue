@@ -1,4 +1,3 @@
-
 <!--
   - Copyright © 2024 Johannes Zangl
   -
@@ -20,9 +19,9 @@
 
 <template>
   <Suspense>
-  <div id="app">
-    <LazyApp/>
-  </div>
+    <div id="app">
+      <LazyApp/>
+    </div>
 
     <template #fallback>
       {{ $t("loading") }}
@@ -40,3 +39,11 @@ export default {
   }
 };
 </script>
+
+<style>
+
+h4 {
+  font-size: 110%;
+}
+
+</style>

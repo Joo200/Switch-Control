@@ -18,9 +18,9 @@
   -->
 
 <template>
-  <b-card no-body :collapsible="true" @collapse="isCollapsed = true" @expand="isCollapsed = false">
+  <b-card :collapsible="true" class="device-card" no-body @collapse="isCollapsed = true" @expand="isCollapsed = false">
     <template #header>
-      <div @click="toggleCollapse" style="cursor: pointer;">
+      <div style="cursor: pointer;" @click="toggleCollapse">
         <b-card-title class="my-2 align-self-center">
           <i-tabler-arrow-badge-down-filled v-if="isCollapsed" class="me-2"/>
           <i-tabler-arrow-badge-up-filled v-if="!isCollapsed" class="me-2"/>
@@ -28,26 +28,29 @@
         </b-card-title>
       </div>
     </template>
-    <b-card-body v-if="!isCollapsed" >
-      <slot>This is the content of the card. It will collapse and expand when the title is clicked.</slot>
+    <b-card-body v-if="!isCollapsed">
+      <slot>
+
+      </slot>
     </b-card-body>
   </b-card>
 </template>
 
-<script>
-// import MaterialSymbolsArrowDropDownCircle from '~icons/material-symbols/arrow-drop-down-circle';
+<style lang="scss" scoped>
+.device-card {
+  background-color: white;
+  color: black;
 
-export default {
-  name: 'CollapsibleCard',
-  data() {
-    return {
-      isCollapsed: true
-    };
-  },
-  methods: {
-    toggleCollapse() {
-      this.isCollapsed = !this.isCollapsed;
-    }
+  .card-header {
+    background-color: blue;
+    color: white;
   }
-};
+}
+</style>
+
+<script setup>
+import {ref} from "vue";
+
+const isCollapsed = ref(true);
+const toggleCollapse = () => isCollapsed.value = !isCollapsed.value;
 </script>

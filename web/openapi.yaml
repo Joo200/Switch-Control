@@ -77,7 +77,7 @@ paths:
             schema:
               $ref: "#/components/schemas/ConfigGpio"
       responses:
-        '201':
+        '204':
           description: "Config changed successfully"
         '401':
           $ref: '#/components/schemas/ApiError'
@@ -92,7 +92,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/DeviceInfo'
+                $ref: '#/components/schemas/DeviceInfo'
   '/channel':
     get:
       summary: "Get the current status of all channels"
@@ -119,7 +119,7 @@ paths:
             schema:
               $ref: '#/components/schemas/SwitchAction'
       responses:
-        '201':
+        '204':
           description: "Update was successful"
         '401':
           $ref: '#/components/schemas/ApiError'
@@ -140,7 +140,7 @@ paths:
             schema:
               $ref: '#/components/schemas/WifiConfiguration'
       responses:
-        '201':
+        '204':
           description: "Update was successful"
         '401':
           $ref: '#/components/schemas/ApiError'
@@ -150,11 +150,11 @@ components:
     Channel:
       description: "A userfriendly named Channel"
       type: "string"
-      enum: ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8"]
+      enum: [ "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8" ]
     SwitchDirection:
       description: "A direction for a switch"
       type: "string"
-      enum: ["Unknown", "Left", "Right"]
+      enum: [ "Unknown", "Left", "Right" ]
     ServoTime:
       description: "Time of a servo operation in us"
       type: integer
@@ -168,7 +168,7 @@ components:
          * 'Servo' - Channel is used as servo output. Available on A1 - A8
          * 'SmartButton' - Channel is used as button in/output. Available on A1 - A8 and B1 - B8
       type: "string"
-      enum: ["Disabled", "Servo", "SmartButton"]
+      enum: [ "Disabled", "Servo", "SmartButton" ]
 
     ApiError:
       type: object
@@ -188,11 +188,11 @@ components:
           properties:
             mode:
               type: string
-              enum: ["Off", "STA", "AP", "Unknown"]
+              enum: [ "Off", "STA", "AP", "Unknown" ]
             status:
               description: "STA state"
               type: string
-              enum: ["Unknown", "Starting", "Connected", "IpReceived", "Disconnected"]
+              enum: [ "Unknown", "Starting", "Connected", "IpReceived", "Disconnected" ]
         chip:
           type: object
           description: "Information about the used hardware chip"
@@ -314,7 +314,7 @@ components:
         direction:
           type: "string"
           description: "The direction which should be used"
-          enum: ["Left", "Right", "Unknown", "Custom"]
+          enum: [ "Left", "Right", "Unknown", "Custom" ]
         time:
           $ref: '#/components/schemas/ServoTime'
     WifiConfiguration:
@@ -328,7 +328,7 @@ components:
         mode:
           type: string
           description: "Operation Mode for WiFi"
-          enum: ["AP", "STA", "Off"]
+          enum: [ "AP", "STA", "Off" ]
         hostname:
           type: string
           description: "Hostname for sta mode"
@@ -347,7 +347,7 @@ components:
               description: "Passphrase to connect to"
             method:
               type: string
-              enum: ["static", "dhcp"]
+              enum: [ "static", "dhcp" ]
             staticIp:
               type: object
               required:
@@ -372,7 +372,7 @@ components:
           properties:
             ssid:
               type: string
-              description:  "SSID for SoftAP"
+              description: "SSID for SoftAP"
               default: "switch-control"
             passphrase:
               type: string

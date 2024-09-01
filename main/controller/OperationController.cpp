@@ -92,7 +92,7 @@ void OperationController::performAction(io::ServoOutputChannel &pendingChange) {
     auto now = std::chrono::steady_clock::now();
     std::chrono::duration<double> lastChange = now - lastDirChange_;
     if (lastChange.count() < kWaitDurationBetweenNextDirChange) {
-        ESP_LOGI("Controller", "Pending changes in cooldown, skipping.");
+        ESP_LOGD("Controller", "Pending changes in cooldown, skipping.");
         return;
     }
     const std::lock_guard<std::mutex> lock(changeMutex_);
@@ -114,9 +114,6 @@ void OperationController::performNextServoChange() {
             return;
         }
     }
-}
-
-void OperationController::performButtonTicks() {
 }
 
 void OperationController::tick() {

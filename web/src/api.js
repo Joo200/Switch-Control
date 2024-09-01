@@ -17,16 +17,13 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {createI18n} from "vue-i18n";
-import en from "./locales/en.json"
-import de from "./locales/de.json"
 
-export default createI18n({
-    locale: import.meta.env.VITE_FALLBACK_LOCALE,
-    fallbackLocale: import.meta.env.VITE_FALLBACK_LOCALE,
-    globalInjection: true,
-    legacy: false,
-    messages: {
-        en, de
+import axios from "axios";
+
+export const api = axios.create({
+    withCredentials: false,
+    headers: {
+        "User-Agent": 'Client',
+        "Cookie": ''
     }
-})
+});

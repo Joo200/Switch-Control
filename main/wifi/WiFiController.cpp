@@ -24,10 +24,10 @@
 #include <esp_log.h>
 #include <esp_wifi.h>
 #include <hal/gpio_types.h>
+#include <lwip/ip4_addr.h>
 #include <nvs_flash.h>
 
 #include <cstring>
-#include <lwip/ip4_addr.h>
 
 int retry_num = 0;
 enum class ConnectionState { eUnknown = 0, eStarting = 1, eConnected = 2, eIpReceived = 3, eDisconnected = 4 };
@@ -65,7 +65,6 @@ static void wifi_event_handler(void *, esp_event_base_t, int32_t event_id, void 
 }
 
 void WiFiController::connectToSta() {
-    // TODO: Segfault when changing configurations
     esp_wifi_stop();
     retry_num = 0;
     curr_state = ConnectionState::eUnknown;
@@ -100,11 +99,9 @@ void WiFiController::connectToSta() {
 }
 
 void WiFiController::createAP() {
-    // TODO: Segfault when changing configurations
     esp_wifi_stop();
     retry_num = 0;
     curr_state = ConnectionState::eUnknown;
-
 
     netif_ = esp_netif_create_default_wifi_ap();
     if (!cfg_.hostname.empty()) {
@@ -124,7 +121,8 @@ void WiFiController::createAP() {
 
     esp_wifi_start();
     esp_wifi_set_mode(WIFI_MODE_AP);
-    ESP_LOGI("WiFi", "wifi_init_softap finished. SSID:%s  password:%s", cfg_.ap.ssid.c_str(), cfg_.ap.passphrase.c_str());
+    ESP_LOGI("WiFi", "wifi_init_softap finished. SSID:%s  password:%s", cfg_.ap.ssid.c_str(),
+             cfg_.ap.passphrase.c_str());
 }
 
 WiFiController::WiFiController(const config::WiFiConfig &cfg) : cfg_(cfg) {
@@ -147,6 +145,7 @@ WiFiController::WiFiController(const config::WiFiConfig &cfg) : cfg_(cfg) {
 void WiFiController::updateMode() {
     if (netif_ != nullptr) {
         esp_netif_destroy_default_wifi(netif_);
+        netif_ = nullptr;
     }
     switch (cfg_.mode) {
         case config::WiFiMode::eOff:
@@ -221,8 +220,19 @@ void WiFiController::tick() {
 }
 
 void WiFiController::updateConfig(const config::WiFiConfig &config) {
+    if (this->cfg_.mode != config.mode) {
+        update = true;
+    } else if (config.mode == config::WiFiMode::eAp) {
+        if (this->cfg_.ap != config.ap) {
+            update = true;
+        }
+    } else if (config.mode == config::WiFiMode::eSta) {
+        if (this->cfg_.sta != config.sta) {
+            update = true;
+        }
+    }
+
     this->cfg_ = config;
-    update = true;
 }
 
 nlohmann::json WiFiController::getStatus() {

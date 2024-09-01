@@ -19,13 +19,18 @@
 
 <template>
   <b-container class="my-1">
-    <h1>{{  $t("title") }}</h1>
-
+    <h1>{{ $t("title") }}</h1>
     <b-container class="my-3">
-      <DeviceInfo v-if="deviceInfo"/>
-      <WiFiForm v-if="wifi"/>
+      <b-row>
+        <b-col md="6">
+          <DeviceInfo v-if="deviceInfo"/>
+        </b-col>
+        <b-col md="6">
+          <WiFiForm v-if="wifi"/>
+        </b-col>
+      </b-row>
     </b-container>
-    <b-container class="my-3" v-for="channel in ChannelLayout()" :key="channel">
+    <b-container v-for="channel in channelLayout" :key="channel" class="my-3">
       <ChannelForm v-if="configs[channel.channel]" :channel="channel.channel" :servo="channel.servo"/>
     </b-container>
   </b-container>
@@ -37,6 +42,8 @@ import ChannelForm from "@/components/ChannelForm.vue";
 import DeviceInfo from "@/components/DeviceInfo.vue";
 import WiFiForm from "@/components/WiFiForm.vue";
 import store from "@/store";
+import Trans from "@/i18n/translation.js";
+import {computed} from "vue";
 
 export default {
   components: {
@@ -44,16 +51,13 @@ export default {
   },
   async setup() {
     await store.initialize()
+    await Trans.switchLocale(Trans.guessDefaultLocale())
     return {
-      configs: store.state.configs,
-      wifi: store.state.wifi,
-      deviceInfo: store.state.deviceInfo
+      configs: computed(() => store.state.configs),
+      wifi: computed(() => store.state.wifi),
+      deviceInfo: computed(() => store.state.deviceInfo),
+      channelLayout: layout,
     }
-  },
-  methods: {
-    ChannelLayout() {
-      return layout
-    },
   },
 };
 </script>

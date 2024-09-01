@@ -18,13 +18,15 @@
   -->
 
 <template>
-  <CollapsibleCard class="my-2">
+  <CollapsibleCard class="my-2 device-card">
     <template #title>
       {{ $t("devInfo.title") }}
     </template>
+    <LanguageSwitcher/>
+
     <table class="table">
       <tr>
-        <td><h4>{{ $t("devInfo.app.title") }}</h4></td>
+        <th>{{ $t("devInfo.app.title") }}</th>
       </tr>
       <tr>
         <td>{{ $t("devInfo.app.name") }}</td>
@@ -43,8 +45,7 @@
         <td>esp-idf {{ 'deviceInfo.app.idf-version' }}</td>
       </tr>
       <tr>
-        <td>
-          <h4>{{ $t("devInfo.chip.title") }}</h4></td>
+        <th>{{ $t("devInfo.chip.title") }}</th>
       </tr>
       <tr>
         <td>{{ $t("devInfo.chip.model") }}</td>
@@ -60,7 +61,7 @@
       </tr>
 
       <tr>
-        <td><h4>{{ $t("devInfo.wifi.title") }}</h4></td>
+        <th>{{ $t("devInfo.wifi.title") }}</th>
       </tr>
       <tr>
         <td>{{ $t("devInfo.wifi.mode") }}</td>
@@ -74,17 +75,20 @@
   </CollapsibleCard>
 </template>
 
-<script>
+<style lang="scss" scoped>
+.device-card {
+  .card-header {
+    background-color: darkgray;
+    color: black;
+  }
+}
+</style>
 
+<script setup>
 import CollapsibleCard from "@/components/items/CollapsableCard.vue";
+import LanguageSwitcher from "@/components/items/LanguageSwitcher.vue";
 import store from "@/store";
+import {computed} from "vue";
 
-export default {
-  components: {CollapsibleCard},
-  data() {
-    return {
-      deviceInfo: store.state.deviceInfo
-    }
-  },
-};
+const deviceInfo = computed(() => store.state.deviceInfo);
 </script>

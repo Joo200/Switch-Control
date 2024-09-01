@@ -58,4 +58,23 @@ void writeWiFi(const config::WiFiConfig &cfg) {
     f << j << std::endl;
     f.close();
 }
+bool WiFiConfig::operator==(const WiFiConfig &rhs) const {
+    return mode == rhs.mode && hostname == rhs.hostname && sta == rhs.sta && ap == rhs.ap;
+}
+bool WiFiConfig::operator!=(const WiFiConfig &rhs) const { return !(rhs == *this); }
+
+bool WiFiClientConfig::operator==(const WiFiClientConfig &rhs) const {
+    return ssid == rhs.ssid && passphrase == rhs.passphrase && method == rhs.method && staticIp == rhs.staticIp;
+}
+bool WiFiClientConfig::operator!=(const WiFiClientConfig &rhs) const { return !(rhs == *this); }
+
+bool WiFiApConfig::operator==(const WiFiApConfig &rhs) const {
+    return ssid == rhs.ssid && passphrase == rhs.passphrase;
+}
+bool WiFiApConfig::operator!=(const WiFiApConfig &rhs) const { return !(rhs == *this); }
+
+bool StaticConfiguration::operator==(const StaticConfiguration &rhs) const {
+    return address == rhs.address && gateway == rhs.gateway && netmask == rhs.netmask;
+}
+bool StaticConfiguration::operator!=(const StaticConfiguration &rhs) const { return !(rhs == *this); }
 }  // namespace config

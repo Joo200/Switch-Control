@@ -17,53 +17,92 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {onMounted, reactive} from 'vue';
-import axios from 'axios';
+import {reactive} from 'vue';
+import {cloneDeep, isEqual} from "lodash";
+import {api} from "@/api.js";
 
 // Define the store state
 let state = reactive({
     dataLoaded: false,
+    /**
+     * Our config (in UI)
+     */
     configs: {},
+    /**
+     * Config that is stored on server
+     */
+    serverConfigs: {},
+    currentlySentConfigs: [],
+
+    /**
+     * Our current wifi config (in UI)
+     */
     wifi: null,
+    /**
+     * Config that is stored on server
+     */
+    serverWifi: null,
+    /**
+     * Whether the wifi config is currently updating
+     */
+    wifiIsUpdating: false,
     deviceInfo: null,
 });
 
+
 // Define the actions
 const actions = {
-    async updateChannel(updatedObject) {
+    async updateChannel(channel) {
+        if (state.currentlySentConfigs.includes(channel)) {
+            return;
+        }
         try {
-            const response = await axios.post(import.meta.env.VITE_API_LOCATION + `/api/config`, updatedObject);
-            state.configs[updatedObject.channel] = updatedObject;
+            state.currentlySentConfigs.push(channel);
+            const data = cloneDeep(state.configs[channel]);
+            await api.post(`/api/config`, data, {
+                timeout: 2000
+            });
+            state.serverConfigs[channel] = data;
         } catch (error) {
             console.error("There was an error: ", error);
+        } finally {
+            state.currentlySentConfigs = state.currentlySentConfigs.filter(it => it !== channel);
         }
     },
-    async updateWiFi(updatedObject) {
+    async updateWiFi() {
+        if (state.wifiIsUpdating) {
+            return;
+        }
         try {
-            const response = axios.post(import.meta.env.VITE_API_LOCATION + '/api/wifi', updatedObject);
-            state.wifi = updatedObject;
+            state.wifiIsUpdating = true;
+            const data = cloneDeep(state.wifi);
+            await api.post('/api/wifi', data, {
+                timeout: 2000
+            });
+            state.serverWifi = data;
 
         } catch (error) {
             console.error("Unable to update wifi: ", error);
+        } finally {
+            state.wifiIsUpdating = false;
         }
     },
     async fetchChannels() {
         try {
-            const response = await axios.get(import.meta.env.VITE_API_LOCATION + '/api/config');
+            const response = await api.get('/api/config');
             console.log("received data: " + JSON.stringify(response.data));
-            state.configs = new Map();
-            response.data.reduce(function (map, obj) {
-                console.log("Storing value for " + obj.channel)
-                map[obj.channel] = obj;
-                return map;
-            }, state.configs);
+            state.configs = {};
+            response.data.forEach(obj => {
+                state.configs[obj.channel] = obj;
+            });
+            state.serverConfigs = cloneDeep(state.configs);
         } catch (error) {
             console.error('Error fetching channel configs:', error);
         }
     },
     async fetchDeviceInfo() {
         try {
-            const response = await axios.get(import.meta.env.VITE_API_LOCATION + '/api/status');
+            const response = await api.get('/api/status');
             state.deviceInfo = response.data;
         } catch (error) {
             console.error('Error fetching device info:', error);
@@ -71,7 +110,7 @@ const actions = {
     },
     async fetchWiFi() {
         try {
-            const response = await axios.get(import.meta.env.VITE_API_LOCATION + '/api/wifi');
+            const response = await api.get('/api/wifi');
             state.wifi = response.data;
         } catch (error) {
             console.log('Error fetching wifi info:', error);
@@ -80,10 +119,15 @@ const actions = {
 };
 
 export default {
-    state, actions,
+    state,
+    actions,
     async initialize() {
         await actions.fetchChannels();
         await actions.fetchDeviceInfo();
         await actions.fetchWiFi();
-    }
+    },
+    isUpdatingChannel: (channel) => state.currentlySentConfigs.includes(channel),
+    shouldSaveChannel: (channel) => !isEqual(state.serverConfigs[channel], state.configs[channel]),
+    isUpdatingWifi: () => state.wifiIsUpdating,
+    shouldSaveWifi: () => !isEqual(state.serverWifi, state.wifi)
 };

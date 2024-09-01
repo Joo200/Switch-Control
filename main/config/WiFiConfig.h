@@ -48,6 +48,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(IpMethod, {
 });
 
 struct StaticConfiguration {
+    bool operator==(const StaticConfiguration &rhs) const;
+    bool operator!=(const StaticConfiguration &rhs) const;
     std::string address{"192.168.178.30"};
     std::string gateway{"192.168.178.1"};
     std::string netmask{"255.255.255.0"};
@@ -56,6 +58,8 @@ struct StaticConfiguration {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(StaticConfiguration, address, gateway, netmask);
 
 struct WiFiClientConfig {
+    bool operator==(const WiFiClientConfig &rhs) const;
+    bool operator!=(const WiFiClientConfig &rhs) const;
     std::string ssid;
     std::string passphrase;
     IpMethod method{IpMethod::eDhcp};
@@ -65,6 +69,8 @@ struct WiFiClientConfig {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(WiFiClientConfig, ssid, passphrase, method, staticIp);
 
 struct WiFiApConfig {
+    bool operator==(const WiFiApConfig &rhs) const;
+    bool operator!=(const WiFiApConfig &rhs) const;
     std::string ssid{"switch-control"};
     std::string passphrase{"emergency"};
 };
@@ -72,6 +78,8 @@ struct WiFiApConfig {
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(WiFiApConfig, ssid, passphrase);
 
 struct WiFiConfig {
+    bool operator==(const WiFiConfig &rhs) const;
+    bool operator!=(const WiFiConfig &rhs) const;
     WiFiMode mode{WiFiMode::eAp};
     std::string hostname{"switch-control"};
     WiFiClientConfig sta{};

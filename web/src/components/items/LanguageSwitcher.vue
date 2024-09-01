@@ -18,25 +18,30 @@
   -->
 
 <template>
-  <b-container class="my-2 input-group-container">
-    <slot>Content</slot>
-  </b-container>
+  <b-form-group :label="$t('locale.title')">
+    <b-form-select :model-value="locale" @change="switchLanguage">
+      <b-form-select-option
+          v-for="sLocale in supportedLocales"
+          :key="`locale-${sLocale}`"
+          :selected="locale === sLocale"
+          :value="sLocale"
+      >
+        {{ t(`locale.${sLocale}`) }}
+      </b-form-select-option>
+    </b-form-select>
+  </b-form-group>
 </template>
 
-<script>
-export default {
-  name: 'CardSection',
-}
-</script>
+<script setup>
+import {useI18n} from 'vue-i18n'
+import Tr from "@/i18n/translation.js"
+import {BFormGroup} from "bootstrap-vue-next";
 
-<style>
-.input-group-container {
-  background-color: #f8f9fa;
-  padding: 1rem;
-  border-radius: 0.3rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
+const {t, locale} = useI18n()
+
+const supportedLocales = Tr.supportedLanguage
+const switchLanguage = async (event) => {
+  const newLocale = event.target.value
+  await Tr.switchLocale(newLocale)
 }
-</style>
-<script setup lang="ts">
 </script>

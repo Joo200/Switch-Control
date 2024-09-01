@@ -1,88 +1,95 @@
 {
-  "title": "Switch Control",
+  "title": "Weichensteuerung",
+  "locale": {
+    "title": "Sprache ändern",
+    "de": "Deutsch",
+    "en": "Englisch"
+  },
   "devInfo": {
-    "title": "Device Info",
+    "title": "Geräteinformation",
     "app": {
-      "title": "App Information",
-      "name": "name",
-      "version": "version",
-      "compile_time": "compile time",
-      "framework": "framework"
+      "title": "Applikation",
+      "name": "Name",
+      "version": "Version",
+      "compile_time": "Kompilierzeit",
+      "framework": "Framework"
     },
     "chip": {
       "title": "Chip Information",
       "model": "Model",
-      "cores": "Cores",
+      "cores": "Kerne",
       "revision": "Revision"
     },
     "wifi": {
       "title": "WiFi Information",
-      "mode": "Mode",
+      "mode": "Modus",
       "status": "Status"
     }
   },
-  "wifi":{
-    "title": "WiFi Settings",
+  "wifi": {
+    "title": "Einstellungen WiFi",
     "mode": {
-      "label":"Mode:",
-      "off": "Disabled",
+      "label": "Modus:",
+      "off": "Deaktiviert",
       "ap": "Access Point",
       "sta": "WiFi Client"
     },
     "hostname": "Hostname:",
     "sta": {
-      "title": "Client settings",
+      "title": "Client Einstellungen",
       "ssid": "SSID:",
-      "passphrase": "Passphrase:",
-      "method": "Method:",
+      "passphrase": "Passwort:",
+      "method": "Methode:",
       "method-dhcp": "DHCP",
-      "method-static": "Static",
-      "address": "Address:",
+      "method-static": "Statisch",
+      "address": "Adresse:",
       "gateway": "Gateway:",
-      "netmask": "Netmask:"
+      "netmask": "Netzmaske:"
     },
     "ap": {
       "title": "Access Point",
       "ssid": "SSID:",
-      "passphrase": "Passphrase:"
+      "passphrase": "Passwort:"
     },
-    "update": "Update Config"
+    "update": "Speichern",
+    "updating": "Wird gespeichert..."
   },
   "channel": {
-    "title": "Configure {channel}",
+    "title": "Einstellungen Kanal {channel}",
     "type": {
-      "label":"Type:",
-      "disabled": "Disabled",
+      "label": "Typ:",
+      "disabled": "Deaktiviert",
       "servo": "Servo",
-      "smartbutton": "Smart-Button"
+      "smartbutton": "Knopf"
     },
     "position": {
-      "label-left": "Position Left",
-      "label-right": "Position Right",
+      "label-left": "Position Links",
+      "label-right": "Position Rechts",
       "normal": "Normal:",
-      "overdraw": "Overdraw:",
+      "overdraw": "Überzug:",
       "step-up": "+",
       "step-down": "-",
-      "overdraw-time": "Overdraw Time:"
+      "overdraw-time": "Überzug Zeit (s):"
     },
     "actions": {
-      "title": "Actions",
-      "add": "Add Action",
-      "delete": "Delete",
-      "channel": "Channel:",
+      "title": "Aktion",
+      "add": "Weitere Aktion hinzufügen",
+      "delete": "Löschen",
+      "channel": "Kanal:",
       "direction": {
-        "label": "Direction:",
-        "left": "Left",
-        "right": "Right",
-        "custom": "Custom",
-        "time": "Time:"
+        "label": "Richtung:",
+        "left": "Links",
+        "right": "Rechts",
+        "custom": "Manuell",
+        "time": "Zeit:"
       }
     },
-    "update": "Update Config",
+    "update": "Speichern",
+    "updating": "Wird gespeichert …",
     "test": {
-      "left": "Left",
-      "right": "Right"
+      "left": "Test Links",
+      "right": "Test Rechts"
     }
   },
-  "loading": "Loading App, please wait..."
+  "loading": "Lade Applikation, bitte warten..."
 }

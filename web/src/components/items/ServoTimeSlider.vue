@@ -18,118 +18,97 @@
   -->
 
 <template>
-  <b-container>
-    <b-row class="align-items-center mb-2">
-      <b-col cols="12" md="2" sm="3">
-        <label class="col-form-label">
-          {{ label }}
-        </label>
-      </b-col>
-      <b-col cols="12" md="7" sm="9" class="d-flex align-items-center">
-        <b-form-input
-            type="range"
-            class="form-range w-100 mb-2 mb-sm-0"
-            :min="min"
-            :max="max"
-            step="5"
-            v-model="internalValue"
-            @input="updateValue"
+  <div class="d-flex align-items-center mb-2 gap-2">
+    <b-form-input
+        v-model="internalValue"
+        :max="max"
+        :min="min"
+        class="form-range flex-grow-1 w-auto"
+        step="5"
+        type="range"
+    />
+    <div class="flex-grow-0">
+      <b-input-group>
+        <b-button
+            class="btn btn-primary"
+            @click="decreaseValue"
+        >
+          -
+        </b-button>
+        <input v-model="internalValue"
+               :style="{'width': '5em'}"
+               class="form-control"
+               pattern="[0-9]{3,4}"
+               type="text"
         />
-      </b-col>
-      <b-col cols="auto" class="d-flex align-items-center mb-2 mb-sm-0">
-        <b-form-input
-            type="number"
-            v-model="internalValue"
-            @input="updateValue"
-            class="form-control"
-            :min="min"
-            :max="max"
-            step="5"
-            style="width: 100px;"
-        />
-        <b-button-group class="d-lg-none mx-2">
-          <b-button
-              class="btn btn-primary"
-              @click="decreaseValue"
-          >&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-          </b-button>
-          <b-button
-              class="btn btn-primary"
-              @click="increaseValue"
-          >&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;
-          </b-button>
-        </b-button-group>
-      </b-col>
-    </b-row>
-  </b-container>
+        <b-button
+            class="btn btn-primary"
+            @click="increaseValue"
+        >
+          +
+        </b-button>
+      </b-input-group>
+    </div>
+  </div>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+import {computed, watch} from "vue";
+import {api} from "@/api.js";
 
-export default {
-  name: 'TimeSlider',
-  props: {
-    channel: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    modelValue: {
-      type: Number,
-      required: true,
-    },
-    min: {
-      type: Number,
-      default: 800,
-    },
-    max: {
-      type: Number,
-      default: 2200,
-    },
+const props = defineProps({
+  channel: {
+    type: String,
+    required: true,
   },
-  data() {
-    return {
-      internalValue: this.modelValue,
-    };
+  modelValue: {
+    type: Number,
+    required: true,
   },
-  watch: {
-    modelValue(newValue) {
-      this.internalValue = newValue;
-    },
+  min: {
+    type: Number,
+    default: 800,
   },
-  methods: {
-    updateValue() {
-      this.$emit('update:modelValue', this.internalValue);
+  max: {
+    type: Number,
+    default: 2200,
+  },
+});
 
-      const data = {
-        channel: this.channel,
-        direction: "Custom",
-        time: parseInt(this.internalValue)
-      }
-      axios.post(import.meta.env.VITE_API_LOCATION + `/api/channel`, data)
-          .then(response => {
-            console.log('Temp data sent updated:');
-          })
-          .catch(error => {
-            console.error('Error updating temp data:', error);
-          });
-    },
-    decreaseValue() {
-      if (this.internalValue > this.min) {
-        this.internalValue -= 5;
-        this.updateValue();
-      }
-    },
-    increaseValue() {
-      if (this.internalValue < this.max) {
-        this.internalValue += 5;
-        this.updateValue();
-      }
-    },
-  },
-};
+const emit = defineEmits(['update:modelValue']);
+
+const internalValue = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('update:modelValue', value)
+});
+
+const decreaseValue = () => {
+  if (internalValue.value > props.min) {
+    internalValue.value -= 5;
+  }
+}
+
+const increaseValue = () => {
+  if (internalValue.value < props.max) {
+    internalValue.value += 5;
+  }
+}
+
+watch(() => internalValue.value, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    const data = {
+      channel: props.channel,
+      direction: "Custom",
+      time: newValue
+    }
+    api.post(`/api/channel`, data)
+        .then(response => {
+          console.log('Temp data sent updated:');
+        })
+        .catch(error => {
+          console.error('Error updating temp data:', error);
+        });
+  }
+});
+
 </script>

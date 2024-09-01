@@ -76,7 +76,7 @@ nlohmann::json AbstractRequestHandler::getJsonBody(httpd_req_t *req) {
 }
 
 void AbstractRequestHandler::sendEmptySuccess(httpd_req_t *req) {
-    httpd_resp_set_status(req, "201");
+    httpd_resp_set_status(req, "204");
     httpd_resp_send(req, "", HTTPD_RESP_USE_STRLEN);
 }
 

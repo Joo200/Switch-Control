@@ -1,5 +1,10 @@
 {
   "title": "Switch Control",
+  "locale": {
+    "title": "Change Language",
+    "de": "German",
+    "en": "English"
+  },
   "devInfo": {
     "title": "Device Info",
     "app": {
@@ -21,10 +26,10 @@
       "status": "Status"
     }
   },
-  "wifi":{
+  "wifi": {
     "title": "WiFi Settings",
     "mode": {
-      "label":"Mode:",
+      "label": "Mode:",
       "off": "Disabled",
       "ap": "Access Point",
       "sta": "WiFi Client"
@@ -46,12 +51,13 @@
       "ssid": "SSID:",
       "passphrase": "Passphrase:"
     },
-    "update": "Update Config"
+    "update": "Save",
+    "updating": "Saving …"
   },
   "channel": {
     "title": "Configure {channel}",
     "type": {
-      "label":"Type:",
+      "label": "Type:",
       "disabled": "Disabled",
       "servo": "Servo",
       "smartbutton": "Smart-Button"
@@ -66,7 +72,7 @@
       "overdraw-time": "Overdraw Time:"
     },
     "actions": {
-      "title": "Actions",
+      "title": "Action",
       "add": "Add Action",
       "delete": "Delete",
       "channel": "Channel:",
@@ -78,7 +84,8 @@
         "time": "Time:"
       }
     },
-    "update": "Update Config",
+    "update": "Save",
+    "updating": "Saving …",
     "test": {
       "left": "Left",
       "right": "Right"
