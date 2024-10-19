@@ -6,3 +6,4 @@ build
 cmake-build**
 
 sdkconfig.old
+managed_components/
