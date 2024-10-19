@@ -33,6 +33,9 @@ idf_component_register(
 )
 target_compile_options(${COMPONENT_LIB} PRIVATE -std=gnu++20)
 
+git_describe(app_ver_git "${CMAKE_CURRENT_LIST_DIR}")
+target_compile_definitions(${COMPONENT_LIB} PRIVATE APP_GIT_VERSION="${app_ver_git}")
+
 include(FetchContent)
 
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)

@@ -34,7 +34,7 @@
       </tr>
       <tr>
         <td>{{ $t("devInfo.app.version") }}</td>
-        <td>{{ deviceInfo.app.version }}</td>
+        <td>{{ deviceInfo.app.version }} ( {{ deviceInfo.app.git }} )</td>
       </tr>
       <tr>
         <td>{{ $t("devInfo.app.compile_time") }}</td>
@@ -42,7 +42,7 @@
       </tr>
       <tr>
         <td>{{ $t("devInfo.app.framework") }}</td>
-        <td>esp-idf {{ 'deviceInfo.app.idf-version' }}</td>
+        <td>esp-idf {{ deviceInfo.app['idf-version'] }}</td>
       </tr>
       <tr>
         <th>{{ $t("devInfo.chip.title") }}</th>

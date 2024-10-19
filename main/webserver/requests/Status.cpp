@@ -56,6 +56,7 @@ static nlohmann::json getAppInfo() {
     const esp_app_desc_t *data = esp_app_get_description();
     app["name"] = data->project_name;
     app["version"] = data->version;
+    app["git"] = APP_GIT_VERSION;
     app["idf-version"] = data->idf_ver;
     app["sha256"] = esp_app_get_elf_sha256_str();
     app["time"] = data->time;
