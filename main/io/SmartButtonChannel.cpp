@@ -81,8 +81,12 @@ void SmartButtonChannel::updateMatchingState(
         }
         auto pending = ch->second.getPendingAction();
         config::SwitchDirection current = ch->second.getDirection();
-        if (pending.has_value() && pending->direction == item.direction) {
-            pendingCount++;
+        if (pending.has_value()) {
+            if (pending->direction == item.direction) {
+                pendingCount++;
+            } else {
+                noMatchesCount++;
+            }
         } else if (current != config::SwitchDirection::eUnknown && current != item.direction) {
             noMatchesCount++;
         }

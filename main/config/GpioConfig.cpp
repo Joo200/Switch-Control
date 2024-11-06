@@ -121,12 +121,13 @@ config::ConfigGpio readGpio(const std::string &gpio) {
         writeGpio(cfg);
         return cfg;
     }
+
     ESP_LOGI("Config", "Reading stored configuration for gpio %s from disk", gpio.c_str());
-    nlohmann::json json = nlohmann::json::parse(f);
-    f.close();
-    ESP_LOGI("Config", "Loaded '%s'", json.dump().c_str());
 
     try {
+        nlohmann::json json = nlohmann::json::parse(f);
+        f.close();
+        ESP_LOGI("Config", "Loaded '%s'", json.dump().c_str());
         config::ConfigGpio data = json;
         data.validate();
         return data;

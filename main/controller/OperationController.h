@@ -35,7 +35,7 @@
  */
 class OperationController {
    public:
-    const inline static double kWaitDurationBetweenNextDirChange = 2;
+    const inline static double kWaitDurationBetweenNextDirChange = 1;
 
     /**
      * @brief Create a new controller.
