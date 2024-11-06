@@ -62,7 +62,7 @@ void ConfigurationStorage::setup() {
 
 ConfigurationStorage::ConfigurationStorage() {
     for (const auto &item : config::kGpioMap) {
-        setConfig(item.first, readGpio(item.first));
+        channels_[item.first] = readGpio(item.first);
     }
 }
 
