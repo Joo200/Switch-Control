@@ -45,6 +45,9 @@ bool ConfigGpio::hasCapability() const {
         case ChannelType::eSmartButton:
             cap = CAP_SMART_BUTTON;
             break;
+        case ChannelType::eTouch:
+            cap = CAP_TOUCH;
+            break;
         default:
             break;
     }
@@ -75,6 +78,7 @@ void ConfigGpio::validate() const {
             servoCfg_->validate();
             break;
         case ChannelType::eSmartButton:
+        case ChannelType::eTouch:
             if (!buttonCfg_.has_value()) {
                 throw std::runtime_error("No button configuration provided");
             }

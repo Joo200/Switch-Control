@@ -28,6 +28,7 @@
 #include "config/ServoConfig.h"
 #include "io/ServoOutChannel.h"
 #include "io/SmartButtonChannel.h"
+#include "io/TouchButton.h"
 
 /**
  * @brief This class is the controller to manage changing servo states.
@@ -84,6 +85,7 @@ class OperationController {
     std::chrono::steady_clock::time_point lastDirChange_{std::chrono::steady_clock::now()};
 
     std::map<std::string, io::SmartButtonChannel> buttonChannels_;
+    std::map<std::string, io::TouchButton>        touchChannels_;
     std::map<std::string, io::ServoOutputChannel> servoOutChannels_;
 
     void performNextServoChange();

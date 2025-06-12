@@ -60,7 +60,8 @@
       "label": "Typ:",
       "disabled": "Deaktiviert",
       "servo": "Servo",
-      "smartbutton": "Knopf"
+      "smartbutton": "Knopf",
+      "touch": "Touchpad"
     },
     "position": {
       "label-left": "Position Links",

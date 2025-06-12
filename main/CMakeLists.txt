@@ -12,6 +12,9 @@ idf_component_register(
 
         "io/ServoOutChannel.cpp"
         "io/SmartButtonChannel.cpp"
+        "io/TouchButton.cpp"
+
+        "srcp/SrcpSocket.cpp"
 
         "webserver/ConfigurationServer.cpp"
         "webserver/AbstractRequestHandler.cpp"
@@ -25,7 +28,7 @@ idf_component_register(
         "wifi/WiFiController.cpp"
         INCLUDE_DIRS .
         REQUIRES
-        esp_http_server driver esp_wifi nvs_flash esp_http_client spiffs esp_app_format
+        esp_http_server driver esp_wifi nvs_flash esp_http_client spiffs esp_app_format led_strip
         EMBED_TXTFILES
         ../web/dist/index.html
         EMBED_FILES

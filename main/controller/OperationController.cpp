@@ -34,10 +34,12 @@ void OperationController::addNewChannel(const config::ConfigGpio &cfg) {
         case config::ChannelType::eSmartButton:
             buttonChannels_.insert({cfg.channel, io::SmartButtonChannel(cfg)});
             break;
-        case config::ChannelType::eServo: {
+        case config::ChannelType::eServo:
             servoOutChannels_.insert({cfg.channel, io::ServoOutputChannel(cfg)});
             break;
-        }
+        case config::ChannelType::eTouch:
+            touchChannels_.insert({cfg.channel, io::TouchButton(cfg)});
+            break;
     }
 }
 
@@ -45,6 +47,7 @@ void OperationController::updateChannel(const config::ConfigGpio &cfg) {
     const std::lock_guard<std::mutex> lock(changeMutex_);
     servoOutChannels_.erase(cfg.channel);
     buttonChannels_.erase(cfg.channel);
+    touchChannels_.erase(cfg.channel);
 
     addNewChannel(cfg);
 }
@@ -120,6 +123,12 @@ void OperationController::tick() {
     for (auto &item : buttonChannels_) {
         if (item.second.tickButton()) {
             ESP_LOGI("Controller", "Button %s has been pressed, performing change.", item.first.c_str());
+            requestSwitchChange(item.second.getAction());
+        }
+    }
+    for (auto &item : touchChannels_) {
+        if (item.second.tickButton()) {
+            ESP_LOGI("Controller", "Touch %s has been activated, performing change.", item.first.c_str());
             requestSwitchChange(item.second.getAction());
         }
     }

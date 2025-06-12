@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Johannes Zangl
+* Copyright © 2024 Johannes Zangl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the “Software”), to deal in the Software without
@@ -17,45 +17,35 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef TOUCHBUTTON_H
+#define TOUCHBUTTON_H
 
-#ifndef SWITCHCONTROL_IO_SMARTBUTTONCHANNEL_H
-#define SWITCHCONTROL_IO_SMARTBUTTONCHANNEL_H
-
-#include <deque>
-#include <map>
-
-#include "ServoOutChannel.h"
-#include "config/ButtonConfig.h"
-#include "config/GpioConfig.h"
-#include "config/ServoConfig.h"
+#include "../config/GpioConfig.h"
+#include "hal/touch_sensor_types.h"
 
 namespace io {
-enum class MatchingState { eNoMatch = 0, eMatch = 1, ePending = 2 };
+    class TouchButton {
+    public:
+        const inline static int kRequiredTicks = 3;
 
-class SmartButtonChannel {
-   public:
-    const inline static int kRequiredTicks = 3;
+        explicit TouchButton(const config::ConfigGpio &config);
+        ~TouchButton() = default;
 
-    explicit SmartButtonChannel(const config::ConfigGpio &config);
-    ~SmartButtonChannel();
+        [[nodiscard]] bool tickButton();
 
-    [[nodiscard]] bool tickButton();
-
-    void updateMatchingState(const std::map<std::string, io::ServoOutputChannel> &channels);
-
-    [[nodiscard]] std::vector<config::SwitchAction> getAction() {
+        [[nodiscard]] std::vector<config::SwitchAction> getAction() {
             if (!config_.buttonCfg_) { return {}; }
-        return config_.buttonCfg_->actionOnPress;
-    }
+            return config_.buttonCfg_->actionOnPress;
+        }
 
-   private:
-    const config::ConfigGpio config_;
+    private:
+        const config::ConfigGpio config_;
+        const touch_pad_t touch_;
+        uint32_t touch_threshold_;
 
-    MatchingState matches_{MatchingState::ePending};
-    int tickPressed_{0};
-
-    void setButton(bool val);
+        int tickPressed_{0};
+    };
 };
-}  // namespace io
 
-#endif  // SWITCHCONTROL_IO_SMARTBUTTONCHANNEL_H
+
+#endif //TOUCHBUTTON_H

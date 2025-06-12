@@ -17,7 +17,6 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #ifndef SWITCHCONTROL_CONFIG_GPIOCONFIG_H
 #define SWITCHCONTROL_CONFIG_GPIOCONFIG_H
 
@@ -33,23 +32,24 @@
 #define CAP_SERVO_OUT (0x1 << 2)
 #define CAP_I2C (0x1 << 3)
 #define CAP_SER_REM_IN (0x1 << 4)
+#define CAP_TOUCH (0x1 << 5)
 
 namespace config {
-enum class ChannelType { eInvalid = -1, eDisabled = 0, eServo = 1, eSmartButton = 2, eI2c = 3 };
+enum class ChannelType { eInvalid = -1, eDisabled = 0, eServo = 1, eSmartButton = 2, eI2c = 3, eTouch = 4 };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(ChannelType, {
-                                              {ChannelType::eInvalid, nullptr},
-                                              {ChannelType::eDisabled, "Disabled"},
-                                              {ChannelType::eServo, "Servo"},
-                                              {ChannelType::eSmartButton, "SmartButton"},
-                                              {ChannelType::eI2c, "I2c"},
-                                          })
+NLOHMANN_JSON_SERIALIZE_ENUM(ChannelType, {{ChannelType::eInvalid, nullptr},
+                                           {ChannelType::eDisabled, "Disabled"},
+                                           {ChannelType::eServo, "Servo"},
+                                           {ChannelType::eSmartButton, "SmartButton"},
+                                           {ChannelType::eI2c, "I2c"},
+                                           {ChannelType::eTouch, "Touch"}})
 
 struct PinCapabilities {
     gpio_num_t gpio;
     int capabilities;
 };
 
+#if 0
 const static inline std::map<std::string, PinCapabilities> kGpioMap = {
     {"A1", {GPIO_NUM_25, CAP_SMART_BUTTON | CAP_SERVO_OUT}},
     {"A2", {GPIO_NUM_13, CAP_SMART_BUTTON | CAP_SERVO_OUT}},
@@ -68,6 +68,22 @@ const static inline std::map<std::string, PinCapabilities> kGpioMap = {
     {"B7", {GPIO_NUM_14, CAP_SMART_BUTTON}},
     {"B8", {GPIO_NUM_15, CAP_SMART_BUTTON}},
 };
+#else
+const static inline std::map<std::string, PinCapabilities> kGpioMap = {
+    {"A1", {GPIO_NUM_1, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"A2", {GPIO_NUM_2, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"A3", {GPIO_NUM_3, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"A4", {GPIO_NUM_4, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"A5", {GPIO_NUM_5, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"A6", {GPIO_NUM_6, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"B1", {GPIO_NUM_7, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"B2", {GPIO_NUM_8, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"B3", {GPIO_NUM_9, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"B4", {GPIO_NUM_10, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"B5", {GPIO_NUM_11, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+    {"B6", {GPIO_NUM_12, CAP_SMART_BUTTON | CAP_SERVO_OUT | CAP_TOUCH}},
+};
+#endif
 
 class ConfigGpio {
    public:

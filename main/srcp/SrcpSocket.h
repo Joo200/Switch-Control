@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Johannes Zangl
+* Copyright © 2024 Johannes Zangl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the “Software”), to deal in the Software without
@@ -17,45 +17,24 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef SRCPSOCKET_H
+#define SRCPSOCKET_H
 
-#ifndef SWITCHCONTROL_IO_SMARTBUTTONCHANNEL_H
-#define SWITCHCONTROL_IO_SMARTBUTTONCHANNEL_H
+#include <string>
 
-#include <deque>
-#include <map>
+namespace srcp {
 
-#include "ServoOutChannel.h"
-#include "config/ButtonConfig.h"
-#include "config/GpioConfig.h"
-#include "config/ServoConfig.h"
+class SrcpSocket {
+public:
+    SrcpSocket();
 
-namespace io {
-enum class MatchingState { eNoMatch = 0, eMatch = 1, ePending = 2 };
+    void start();
+private:
+    void handleClient(int clientSock);
+    void processCommand(int sock, const std::string &cmd)
 
-class SmartButtonChannel {
-   public:
-    const inline static int kRequiredTicks = 3;
-
-    explicit SmartButtonChannel(const config::ConfigGpio &config);
-    ~SmartButtonChannel();
-
-    [[nodiscard]] bool tickButton();
-
-    void updateMatchingState(const std::map<std::string, io::ServoOutputChannel> &channels);
-
-    [[nodiscard]] std::vector<config::SwitchAction> getAction() {
-            if (!config_.buttonCfg_) { return {}; }
-        return config_.buttonCfg_->actionOnPress;
-    }
-
-   private:
-    const config::ConfigGpio config_;
-
-    MatchingState matches_{MatchingState::ePending};
-    int tickPressed_{0};
-
-    void setButton(bool val);
 };
-}  // namespace io
 
-#endif  // SWITCHCONTROL_IO_SMARTBUTTONCHANNEL_H
+} // srcp
+
+#endif //SRCPSOCKET_H

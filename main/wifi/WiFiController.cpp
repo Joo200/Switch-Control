@@ -26,8 +26,13 @@
 #include <hal/gpio_types.h>
 #include <lwip/ip4_addr.h>
 #include <nvs_flash.h>
+#include <led_strip.h>
 
 #include <cstring>
+
+#define LED_STRIP_GPIO 21
+#define LED_STRIP_LED_NUM 1
+led_strip_handle_t led_strip;
 
 int retry_num = 0;
 enum class ConnectionState { eUnknown = 0, eStarting = 1, eConnected = 2, eIpReceived = 3, eDisconnected = 4 };
@@ -136,7 +141,26 @@ WiFiController::WiFiController(const config::WiFiConfig &cfg) : cfg_(cfg) {
     esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, wifi_event_handler, nullptr);
     esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, wifi_event_handler, nullptr);
 
+#ifdef CONFIG_IDF_TARGET_ESP32S3
+    led_strip_config_t strip_config = {
+        .strip_gpio_num = LED_STRIP_GPIO,
+        .max_leds = LED_STRIP_LED_NUM,
+    };
+    led_strip_rmt_config_t rmt_config = {
+        .clk_src = RMT_CLK_SRC_DEFAULT,
+        .resolution_hz = 10 * 1000 * 1000, // 10MHz
+        .mem_block_symbols = 64,
+        .flags = {
+            .with_dma = false,
+        }
+    };
+    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip));
+    ESP_ERROR_CHECK(led_strip_clear(led_strip));
+    ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, 50, 0, 0)); // Red
+    ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+#else
     gpio_set_direction(GPIO_NUM_2, GPIO_MODE_OUTPUT);
+#endif
     gpio_set_direction(GPIO_NUM_0, GPIO_MODE_INPUT);
 
     updateMode();
@@ -166,6 +190,32 @@ static bool blinkState(int cycle, int value) {
     return (millis % cycle) > value;
 }
 
+#ifdef CONFIG_IDF_TARGET_ESP32S3
+
+void set_rgb_led(int red, int green, int blue) {
+    ESP_ERROR_CHECK(led_strip_clear(led_strip));
+    ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, 0, red, green, blue)); // Red
+    ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+}
+
+void WiFiController::updateLED() const {
+    switch (cfg_.mode) {
+        case config::WiFiMode::eOff:
+            set_rgb_led(50, 0, 0);
+            break;
+        case config::WiFiMode::eAp:
+            set_rgb_led(0, 0, 50);
+            break;
+        case config::WiFiMode::eSta:
+            if (curr_state == ConnectionState::eConnected || curr_state == ConnectionState::eIpReceived) {
+                set_rgb_led(0, 50, 0);
+            } else {
+                set_rgb_led(75, 25, 0);
+            }
+            break;
+    }
+}
+#else
 void WiFiController::updateLED() const {
     switch (cfg_.mode) {
         case config::WiFiMode::eOff:
@@ -185,6 +235,7 @@ void WiFiController::updateLED() const {
             gpio_set_level(GPIO_NUM_2, blinkState(250, 50));
     }
 }
+#endif
 
 void WiFiController::tick() {
     if (update) {

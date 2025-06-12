@@ -28,6 +28,7 @@
           <b-form-select-option value="Disabled">{{ $t("channel.type.disabled") }}</b-form-select-option>
           <b-form-select-option v-if="servo" value="Servo">{{ $t("channel.type.servo") }}</b-form-select-option>
           <b-form-select-option value="SmartButton">{{ $t("channel.type.smartbutton") }}</b-form-select-option>
+          <b-form-select-option value="Touch">{{ $t("channel.type.touch") }}</b-form-select-option>
         </b-form-select>
       </b-form-group>
 
@@ -74,7 +75,7 @@
         </b-form-group>
       </template>
 
-      <div v-if="config.type === 'SmartButton'">
+      <div v-if="config.type === 'SmartButton' || config.type === 'Touch'">
         <div v-for="(action, index) in config.button.actions" :key="index">
           <h4 class="mt-3">{{ $t("channel.actions.title") }}</h4>
           <b-row>
@@ -116,7 +117,7 @@
       </div>
 
       <div class="d-flex align-items-center gap-2 flex-wrap mt-2">
-        <template v-if="config.type==='SmartButton'">
+        <template v-if="config.type==='SmartButton' || config.type === 'Touch'">
           <b-button variant="success" @click="addAction(channel)">{{ $t("channel.actions.add") }}</b-button>
         </template>
         <template v-if="config.type==='Servo'">
@@ -191,7 +192,7 @@ watch(() => config.value.type, () => {
       posRightOverdraw: 1500,
       overdrawTime: 0.2
     };
-  } else if (config.value.type === 'SmartButton' && !config.value.button) {
+  } else if ((config.value.type === 'SmartButton' || config.value.type === 'Touch') && !config.value.button) {
     console.log("Updating button data");
     config.value.button = {
       invertedInput: true,
@@ -202,7 +203,7 @@ watch(() => config.value.type, () => {
 });
 
 watchEffect(() => {
-  if (config.value.type === 'SmartButton' && config.value.button) {
+  if ((config.value.type === 'SmartButton' || config.value.type === 'Touch') && config.value.button) {
     config.value.button.actions.forEach(action => {
       if (action.direction === 'Custom' && !action.time) {
         action.time = 1500

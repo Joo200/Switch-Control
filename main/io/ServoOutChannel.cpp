@@ -26,6 +26,13 @@
 #include <cstring>
 #include <map>
 
+
+#ifdef CONFIG_IDF_TARGET_ESP32S3
+#define LEDC_USED_SPEED_MODE LEDC_SPEED_MODE_MAX
+#else
+#define LEDC_USED_SPEED_MODE LEDC_HIGH_SPEED_MODE
+#endif
+
 namespace io {
 
 ServoOutputChannel::ServoOutputChannel(const config::ConfigGpio &config) : config_(config) {
@@ -34,11 +41,18 @@ ServoOutputChannel::ServoOutputChannel(const config::ConfigGpio &config) : confi
 
 ServoOutputChannel::~ServoOutputChannel() = default;
 
+#ifdef CONFIG_IDF_TARGET_ESP32S3
+    const std::map<gpio_num_t, ledc_channel_t> kGpioToLedCChannelMap = {
+        {GPIO_NUM_1, LEDC_CHANNEL_0}, {GPIO_NUM_2, LEDC_CHANNEL_1}, {GPIO_NUM_3, LEDC_CHANNEL_2},
+        {GPIO_NUM_4, LEDC_CHANNEL_3}, {GPIO_NUM_5, LEDC_CHANNEL_4}, {GPIO_NUM_6, LEDC_CHANNEL_5}
+    };
+#else
 const std::map<gpio_num_t, ledc_channel_t> kGpioToLedCChannelMap = {
     {GPIO_NUM_25, LEDC_CHANNEL_0}, {GPIO_NUM_13, LEDC_CHANNEL_1}, {GPIO_NUM_23, LEDC_CHANNEL_2},
     {GPIO_NUM_19, LEDC_CHANNEL_3}, {GPIO_NUM_18, LEDC_CHANNEL_4}, {GPIO_NUM_17, LEDC_CHANNEL_5},
     {GPIO_NUM_16, LEDC_CHANNEL_6}, {GPIO_NUM_4, LEDC_CHANNEL_7},
 };
+#endif
 
 void ServoOutputChannel::initLedc() {
     ESP_LOGI("Servo", "Initializing LEDC");
@@ -46,9 +60,13 @@ void ServoOutputChannel::initLedc() {
     ledc_timer_config_t timer_conf{};
     memset(&timer_conf, 0, sizeof(ledc_timer_config_t));
     timer_conf.clk_cfg = LEDC_AUTO_CLK;
+#ifdef CONFIG_IDF_TARGET_ESP32S3
+    timer_conf.duty_resolution = LEDC_TIMER_14_BIT;
+#else
     timer_conf.duty_resolution = LEDC_TIMER_15_BIT;
+#endif
+    timer_conf.speed_mode = LEDC_USED_SPEED_MODE;
     timer_conf.freq_hz = 50;
-    timer_conf.speed_mode = LEDC_HIGH_SPEED_MODE;
     timer_conf.timer_num = LEDC_TIMER_0;
     ledc_timer_config(&timer_conf);
 
@@ -70,7 +88,7 @@ void ServoOutputChannel::initChannel() const {
     channel_conf.duty = getDuty(config_.servoCfg_->servoLeft);
     channel_conf.gpio_num = config_.gpio();
     channel_conf.intr_type = LEDC_INTR_DISABLE;
-    channel_conf.speed_mode = LEDC_HIGH_SPEED_MODE;
+    channel_conf.speed_mode = LEDC_USED_SPEED_MODE;
     channel_conf.timer_sel = LEDC_TIMER_0;
     ledc_channel_config(&channel_conf);
     ESP_LOGI("Servo", "Initializing Channel %s finished", config_.channel.c_str());
@@ -79,8 +97,8 @@ void ServoOutputChannel::initChannel() const {
 void ServoOutputChannel::setServo(int us) {
     ESP_LOGI("Servo", "Set Servo %s to state %d us; dc %d", config_.channel.c_str(), us, getDuty(us));
     ledc_channel_t ledcChannel = kGpioToLedCChannelMap.at(config_.gpio());
-    ledc_set_duty(LEDC_HIGH_SPEED_MODE, ledcChannel, getDuty(us));
-    ledc_update_duty(LEDC_HIGH_SPEED_MODE, ledcChannel);
+    ledc_set_duty(LEDC_USED_SPEED_MODE, ledcChannel, getDuty(us));
+    ledc_update_duty(LEDC_USED_SPEED_MODE, ledcChannel);
     currPos_ = us;
 }
 

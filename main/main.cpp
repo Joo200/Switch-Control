@@ -22,6 +22,7 @@
 
 #include "controller/OperationController.h"
 #include "freertos/FreeRTOS.h"
+#include "io/TouchButton.h"
 #include "webserver/ConfigurationServer.h"
 #include "wifi/WiFiController.h"
 

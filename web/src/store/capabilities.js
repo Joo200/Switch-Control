@@ -29,14 +29,14 @@ export const layout = [
     new ChannelCapabilities("A4", true),
     new ChannelCapabilities("A5", true),
     new ChannelCapabilities("A6", true),
-    new ChannelCapabilities("A7", true),
-    new ChannelCapabilities("A8", true),
+   // new ChannelCapabilities("A7", true),
+   // new ChannelCapabilities("A8", true),
     new ChannelCapabilities("B1", false),
     new ChannelCapabilities("B2", false),
     new ChannelCapabilities("B3", false),
     new ChannelCapabilities("B4", false),
     new ChannelCapabilities("B5", false),
     new ChannelCapabilities("B6", false),
-    new ChannelCapabilities("B7", false),
-    new ChannelCapabilities("B8", false)
+   // new ChannelCapabilities("B7", false),
+   // new ChannelCapabilities("B8", false)
 ]
