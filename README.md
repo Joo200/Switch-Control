@@ -84,3 +84,25 @@ With the following commands the unit tests can be executed:
 ```shell
 idf.py --preview set-target linux build 
 ```
+
+# Demo web application
+
+## Compiling and Deploying Manually
+
+If you want to build the demo application manually:
+
+1. Navigate to the `web` directory.
+2. Install dependencies: `npm install`
+3. Build the demo: `npm run build:demo`
+
+The output will be generated in `web/dist`.
+
+## Automated Deployment
+
+The project includes a GitHub Action that automatically builds and deploys the demo to the `gh-pages` branch whenever you push to the `master` branch.
+
+To enable this:
+1. Ensure your default branch is named `master` (or update `.github/workflows/deploy-demo.yml`).
+2. Go to your repository settings on GitHub: **Settings > Pages**.
+3. Under **Build and deployment > Source**, select **Deploy from a branch**.
+4. Select the `gh-pages` branch and the `/ (root)` folder.

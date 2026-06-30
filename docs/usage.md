@@ -72,4 +72,11 @@ The button and LED should follow this wiring layout:
 
 Button behaviors are defined in the web interface. Each button can trigger multiple actions, allowing it to toggle or change the direction of other configured pins (e.g., controlling a servo).
 
+## Demo Application
+
+A demo version of the web application is available for testing without ESP32 hardware.
+
+### Online Demo
+The demo is automatically deployed to GitHub Pages and can be accessed at:
+`https://joo200.github.io/switch-control/`
 
