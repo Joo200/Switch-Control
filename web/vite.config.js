@@ -28,6 +28,7 @@ export default defineConfig(({mode}) => {
             }),
             VieI18nPlugin({
                 include: resolve(dirname(fileURLToPath(import.meta.url)), './src/i18n/locales/**'),
+                strictMessage: false,
             })
         ].filter(Boolean),
         server: {

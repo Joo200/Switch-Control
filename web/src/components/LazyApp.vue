@@ -25,7 +25,7 @@
         <template #title>
           {{ $t("docs.title") }}
         </template>
-        {{ $t("docs.text") }}
+        <div v-html="$t('docs.text')"></div>
       </CollapsibleCard>
       <b-row>
         <b-col md="6">
