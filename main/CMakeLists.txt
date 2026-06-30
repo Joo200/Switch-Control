@@ -25,7 +25,7 @@ idf_component_register(
         "wifi/WiFiController.cpp"
         INCLUDE_DIRS .
         REQUIRES
-        esp_http_server driver esp_wifi nvs_flash esp_http_client spiffs esp_app_format
+        esp_driver_ledc esp_http_server esp_driver_gpio driver esp_wifi nvs_flash esp_http_client spiffs esp_app_format
         EMBED_TXTFILES
         ../web/dist/index.html
         EMBED_FILES
