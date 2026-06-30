@@ -78,5 +78,5 @@ A demo version of the web application is available for testing without ESP32 har
 
 ### Online Demo
 The demo is automatically deployed to GitHub Pages and can be accessed at:
-`https://joo200.github.io/switch-control/`
+`https://joo200.github.io/Switch-Control/`
 

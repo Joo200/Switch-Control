@@ -1,5 +1,9 @@
 {
   "title": "Switch Control",
+  "docs": {
+    "title": "Documentation",
+    "text": "Documentation is available <a href=\"https://github.com/Joo200/Switch-Control/blob/master/docs/usage.md\" target=\"_blank\">here</a>.<br>A demo application is available <a href=\"https://joo200.github.io/Switch-Control/\" target=\"_blank\">here</a>."
+  },
   "locale": {
     "title": "Change Language",
     "de": "German",

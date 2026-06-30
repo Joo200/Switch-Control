@@ -1,5 +1,9 @@
 {
   "title": "Weichensteuerung",
+  "docs": {
+    "title": "Dokumentation",
+    "text": "Die Dokumentation ist <a href=\"https://github.com/Joo200/Switch-Control/blob/master/docs/usage.md\" target=\"_blank\">hier</a> verfügbar.<br>Eine Demo-Anwendung ist <a href=\"https://joo200.github.io/Switch-Control/\" target=\"_blank\">hier</a> verfügbar."
+  },
   "locale": {
     "title": "Sprache ändern",
     "de": "Deutsch",

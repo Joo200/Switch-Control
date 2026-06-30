@@ -21,6 +21,12 @@
   <b-container class="my-1">
     <h1>{{ $t("title") }}</h1>
     <b-container class="my-3">
+      <CollapsibleCard class="my-2 device-card">
+        <template #title>
+          {{ $t("docs.title") }}
+        </template>
+        {{ $t("docs.text") }}
+      </CollapsibleCard>
       <b-row>
         <b-col md="6">
           <DeviceInfo v-if="deviceInfo"/>
@@ -44,9 +50,11 @@ import WiFiForm from "@/components/WiFiForm.vue";
 import store from "@/store";
 import Trans from "@/i18n/translation.js";
 import {computed} from "vue";
+import CollapsibleCard from "@/components/items/CollapsableCard.vue";
 
 export default {
   components: {
+    CollapsibleCard,
     WiFiForm, ChannelForm, DeviceInfo
   },
   async setup() {
