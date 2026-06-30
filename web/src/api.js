@@ -19,8 +19,11 @@
 
 
 import axios from "axios";
+import {mockApi} from "@/mockApi.js";
 
-export const api = axios.create({
+const isDemo = import.meta.env.VITE_DEMO_MODE === 'true';
+
+export const api = isDemo ? mockApi : axios.create({
     withCredentials: false,
     headers: {
         "User-Agent": 'Client',
