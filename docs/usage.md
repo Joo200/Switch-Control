@@ -41,6 +41,8 @@ The ESP32 DevKit is designed to be mounted on a PCB with the following layout:
 
 Servos can be connected directly to the pin headers. They are configurable via the web interface using pins **A1 through A8**.
 
+The data pin has to be towards the center of the board.
+
 The following parameters can be adjusted:
 
 * **Left Position**
@@ -67,6 +69,8 @@ To read button presses and drive the LED status simultaneously on a single pin, 
 The button and LED should follow this wiring layout:
 
 <img src="button_layout.png" width="500">
+
+Connect GND, 5V and GPIO to the respective pins on the board. Make sure that the GPIO pin is towards the center of the board.
 
 #### Configuring Button Actions
 
